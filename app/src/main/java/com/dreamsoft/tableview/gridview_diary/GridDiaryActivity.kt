@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.bumptech.glide.Glide
 import com.dreamsoft.tableview.R
 import com.dreamsoft.tableview.gridview_diary.models.EventData
 import com.dreamsoft.tableview.gridview_diary.models.Events
@@ -58,9 +59,16 @@ class GridDiaryActivity : AppCompatActivity() {
 
         val maps = arList.groupBy { it.engineer_id }
 
+        Log.e("tagg", "getData: "+ maps )
+
         val engineerIds = maps.keys
 
         setGridAdapter(maps)
+
+        arList.let {
+            val date = changeDateFormat(it[0].startDate)
+            tv_date.text = date
+        }
 
 
      /*   val setOfThree = HashMap<String, List<Events>>()
@@ -80,20 +88,42 @@ class GridDiaryActivity : AppCompatActivity() {
 
         Log.e("set of threee  ", "setGridAdapter: " + setOfThree)
 
-        // Set Date for the index
-        arList.let {
-            val date = changeDateFormat(it[0].startDate)
-            tv_date.text = date
-        }
+        //Set Date for the index
+
 
         setGridAdapter(setOfThree["0"]!!)*/
         // val weatherList: List<Events> = Gson().fromJson(EventData.data , Array<Events>::class.java).toList()
     }
 
     private fun setGridAdapter(arList: Map<String, List<Events>>) {
+        var arList2: Map.Entry<String, List<Events>>
+        var nameIndex = 0
 
-        arList.forEach {
-            Log.e("data  type  ", "setGridAdapter: " + it)
+        arList.forEach lit@{
+            Log.e("name Index ", "setGridAdapter: " + it.component2()[0].color_string)
+
+            if(nameIndex == 3) {
+                return@lit
+            }
+            arList2 = it
+
+            Log.e("name Index ", "setGridAdapter: " + it.component2()[0].username)
+
+            when(nameIndex) {
+                1 -> {
+                    tv_name_1.text = it.value[0].username
+                }
+
+                2 -> {
+                    tv_name_1.text = it.value[0].username
+                }
+
+                3 -> {
+                    tv_name_1.text = it.value[0].username
+                }
+            }
+
+            nameIndex++
         }
 
         val gridDiaryAdapter = DiaryGridAdapter(arList)
@@ -114,3 +144,4 @@ class GridDiaryActivity : AppCompatActivity() {
 
     }
 }
+
