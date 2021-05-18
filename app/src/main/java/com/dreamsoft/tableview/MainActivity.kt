@@ -54,11 +54,11 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         //ll_10_00_col_2
         val inflater: LayoutInflater = LayoutInflater.from(this);
-        val view: View = inflater.inflate(R.layout.item_job, null);
-        val view6_job: View = inflater.inflate(R.layout.item_job, null);
+        val view: View = inflater.inflate(R.layout.item_job_1, null);
+        val view6_job: View = inflater.inflate(R.layout.item_job_1, null);
       //  ll_10_00_col_2.addView(view)
 
-        val view2: View = inflater.inflate(R.layout.item_job, null);
+        val view2: View = inflater.inflate(R.layout.item_job_1, null);
         ll_11_00_col_1.addView(view2)
 
 
@@ -67,10 +67,10 @@ class MainActivity : AppCompatActivity() {
         Glide.with(this).load(R.drawable.ic_profile_3).circleCrop().into(iv_profile_3)
 
 
-        val view3: View = inflater.inflate(R.layout.item_job, null);
+        val view3: View = inflater.inflate(R.layout.item_job_1, null);
         ll_11_00_col_1.addView(view3)
 
-        val view4: View = inflater.inflate(R.layout.item_job, null);
+        val view4: View = inflater.inflate(R.layout.item_job_1, null);
 
         val row = TableRow(this)
         row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

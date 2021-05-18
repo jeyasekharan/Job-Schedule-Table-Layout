@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_card"
     android:layout_width="wrap_content"
@@ -63,54 +64,65 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_address">
 
             <LinearLayout
-                android:id="@+id/ll_btn_1"
+                android:id="@+id/ll_first_button"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <TextView
+                    android:id="@+id/iv_btn_1"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_btn_black" />
+                    android:text="J"
+                    android:textSize="17sp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/ic_btn_black"
+                    android:gravity="center"
+                    android:src="@drawable/ic_question_mark"/>
 
                 <TextView
+                    android:id="@+id/tv_estimate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Estimate"
-                    android:layout_marginStart="5dp"
-                    android:textColor="#000"/>
+                    android:textColor="@color/black"
+                    android:textSize="13sp"
+                    android:paddingStart="5dp"
+                    android:text="Estimate"/>
 
             </LinearLayout>
-
 
             <LinearLayout
-                android:id="@+id/ll_btn_2"
+                android:id="@+id/ll_second_button"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.AppCompatButton
+                <ImageView
+                    android:id="@+id/iv_btn_2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/ic_btn_black" />
+                    android:background="@drawable/ic_border_yellow"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_question_mark"/>
 
                 <TextView
+                    android:id="@+id/tv_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="13sp"
+                    android:paddingStart="5dp"
                     android:text="Status"
-                    android:layout_marginStart="5dp"
-                    android:textColor="#D61515"/>
+                    android:layout_gravity="center"/>
 
             </LinearLayout>
-
 
         </LinearLayout>
 

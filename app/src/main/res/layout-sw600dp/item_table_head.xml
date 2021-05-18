@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tr_heading"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@color/black"
+    android:minHeight="100px"
+    android:showDividers="middle">
+
+    <LinearLayout
+        android:id="@+id/ll_time_column_empty"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:minHeight="100px"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_name_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#e2e2e3"
+        android:minHeight="100px"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_profile_1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="3dp" />
+
+        <TextView
+            android:id="@+id/tv_name_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:text="David Newman " />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_name_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#e2e2e3"
+        android:minHeight="100px"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_profile_2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="3dp" />
+
+        <TextView
+            android:id="@+id/tv_name_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="John Doe " />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_name_3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#e2e2e3"
+        android:minHeight="100px"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_profile_3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="3dp" />
+
+        <TextView
+            android:id="@+id/tv_name_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:text="Anitha" />
+
+    </LinearLayout>
+
+</TableRow>

@@ -13,10 +13,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:minHeight="100px"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="10dp">
 
             <TextView
-                android:id="@+id/tv_9_00"
+                android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -32,32 +33,35 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_9_00_col_1"
+            android:id="@+id/ll_col_1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:minHeight="100px"
+            android:padding="5dp"
             android:orientation="horizontal">
 
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_9_00_col_2"
+            android:id="@+id/ll_col_2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:minHeight="100px"
+            android:padding="5dp"
             android:orientation="horizontal">
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_9_00_col_3"
+            android:id="@+id/ll_col_3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:minHeight="100px"
+            android:padding="5dp"
             android:orientation="horizontal">
 
         </LinearLayout>
