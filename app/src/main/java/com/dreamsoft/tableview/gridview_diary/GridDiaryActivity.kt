@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.dreamsoft.tableview.R
 import com.dreamsoft.tableview.gridview_diary.models.EventData
 import com.dreamsoft.tableview.gridview_diary.models.Events
@@ -16,7 +15,7 @@ import java.lang.reflect.Type
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
-
+/* This is diary view with gridview  */
 class GridDiaryActivity : AppCompatActivity() {
 
     var jsonArray: JSONArray? = null
@@ -49,22 +48,22 @@ class GridDiaryActivity : AppCompatActivity() {
 
     private fun getData() {
 
-        var hashEvents: HashSet<Events>? = null
-        var hashMapEvents: HashMap<String, Events>? = null
-
+        /* Convert string data to Class  */
         val listType: Type = object : TypeToken<List<Events?>?>() {}.type
         val arList = Gson().fromJson<List<Events>>(EventData.data, listType)
 
         val totalEvents = arList.size
 
+        /* Grouping events by engineers id  */
         val maps = arList.groupBy { it.engineer_id }
 
         Log.e("tagg", "getData: "+ maps )
 
-        val engineerIds = maps.keys
+        /* Set adapter */
 
         setGridAdapter(maps)
 
+        /* Select date from event and set date in top heading */
         arList.let {
             val date = changeDateFormat(it[0].startDate)
             tv_date.text = date
@@ -99,6 +98,7 @@ class GridDiaryActivity : AppCompatActivity() {
         var arList2: Map.Entry<String, List<Events>>
         var nameIndex = 0
 
+        /* This code will fetch 3 engineers name and place it in heading */
         arList.forEach lit@{
             Log.e("name Index ", "setGridAdapter: " + it.component2()[0].color_string)
 

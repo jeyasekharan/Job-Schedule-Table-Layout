@@ -18,6 +18,7 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
 
     var context: Context? = null
 
+    /* Time data for first column */
     private val arrTimes = arrayListOf(
         "6.00",
         "7.00",
@@ -36,6 +37,7 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
         "20.00"
     )
 
+    /* Engineer ids and events related to 3 engineers in list array */
     var keysEngineer: List<String>
     var event1: List<Events>
     var event2: List<Events>
@@ -49,6 +51,8 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
         event2 = arList[keysEngineer[1]]!!
         event3 = arList[keysEngineer[2]]!!
 
+
+        /* Get the start time and end time for each events ---- This is just for checking */
         event1.forEach {
             val startTime = it.startDate.split(" ").toTypedArray()[1]
             val endTime = it.endDate.split(" ").toTypedArray()[1]
@@ -74,95 +78,90 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
 
-        /*   return when (viewType) {
-               1 -> ViewHolder1(
-                   LayoutInflater.from(parent.context).inflate(R.layout.item_grid_blank, parent, false)
-               )
-               2 -> ViewHolder2(
-                   LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
-               )
-               else -> {
-                   ViewHolder2(
-                       LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
-                   )
-               }
-           }*/
-
         return ViewHolder2(
             LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        /*  when (holder.itemViewType) {
-              1 -> {
-                  val viewHolder1: ViewHolder1 = holder as ViewHolder1
-              }
-              2 -> {
-                  val viewHolder2: ViewHolder2 = holder as ViewHolder2
 
-                  val inflater: LayoutInflater = LayoutInflater.from(context);
-                  val jobView: View = inflater.inflate(R.layout.item_job_1, null);
-
-              }
-              else -> {
-                  val viewHolder2: ViewHolder2 = holder as ViewHolder2
-
-                  viewHolder2.tv_time?.text = arrTimes[position]
-
-          *//*        val inflater: LayoutInflater = LayoutInflater.from(context);
-                val jobView: View = inflater.inflate(R.layout.item_job_1, null);
-
-                viewHolder2.ll_9_00_col_3?.addView(jobView)
-
-                viewHolder2.tv_time?.text = arrTimes[position]*//*
-            }
-        }*/
+        holder.setIsRecyclable(false)
 
         val viewHolder2: ViewHolder2 = holder as ViewHolder2
         viewHolder2.tv_time?.text = arrTimes[position]
 
+        /* The three events will be looped to check whether the engineer has any event for that particular time*/
         event1.forEach {
 
             val startTime = it.startDate.split(" ").toTypedArray()[1]
             val endTime = it.endDate.split(" ").toTypedArray()[1]
 
             if (startTime == DiaryData.arrDateTime[position]) {
-                Log.e("event 1:", "onBindViewHolder: event 1 $startTime   array time DiaryData.arrDateTime[position]" )
+               // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
 
-                addEvent(viewHolder2, viewHolder2.ll_col_1!!)
+                //addEvent(viewHolder2, viewHolder2.ll_col_1!!)
+                addEvent(viewHolder2, viewHolder2.ll_col_1!!, event = it)
             }
         }
 
         event2.forEach {
+
             val startTime = it.startDate.split(" ").toTypedArray()[1]
             val endTime = it.endDate.split(" ").toTypedArray()[1]
 
+          //  viewHolder2.ll_col_2!!.removeAllViews()
+
             if (startTime == DiaryData.arrDateTime[position]) {
-                Log.e("event 2:", "onBindViewHolder: event 2 $startTime   array time DiaryData.arrDateTime[position]" )
+               // Log.e("event 2:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
 
-                addEvent(viewHolder2, viewHolder2.ll_col_2!!)
+                addEvent(viewHolder2, viewHolder2.ll_col_2!!, event = it)
             }
-
         }
 
         event3.forEach {
             val startTime = it.startDate.split(" ").toTypedArray()[1]
             val endTime = it.endDate.split(" ").toTypedArray()[1]
 
-            if (startTime == DiaryData.arrDateTime[position]) {
-                Log.e("event 3:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
+           // viewHolder2.ll_col_3!!.removeAllViews()
 
-                addEvent(viewHolder2, viewHolder2.ll_col_3!!)
+            if (startTime == DiaryData.arrDateTime[position]) {
+                Log.e("event 3:", "onBindViewHolder: event 3 $startTime   array time ${DiaryData.arrDateTime[position]}" )
+
+                addEvent(viewHolder2, viewHolder2.ll_col_3!!, event = it)
             }
         }
     }
 
+    /* Method to inflate the event in that particular column */
 
-    private fun addEvent(viewHolder2: ViewHolder2, linearLayout: LinearLayout) {
+    private fun addEvent(viewHolder2: ViewHolder2, linearLayout: LinearLayout, event: Events) {
+
         val inflater: LayoutInflater = LayoutInflater.from(context)
-        val jobView: View = inflater.inflate(R.layout.item_job_1, null);
-        linearLayout.addView(jobView)
+        var jobView: View? = null
+
+        when(event.jobEventType) {
+            1 -> {
+               jobView  = inflater.inflate(R.layout.item_job_1, null);
+            }
+
+            2 -> {
+                jobView = inflater.inflate(R.layout.item_job_2, null);
+            }
+
+            3 -> {
+                jobView = inflater.inflate(R.layout.item_job_3, null);
+            }
+        }
+
+        val tv_text = jobView?.findViewById<TextView>(R.id.tv_text)
+        val tv_subtext = jobView?.findViewById<TextView>(R.id.tv_subtext)
+        val tv_address = jobView?.findViewById<TextView>(R.id.tv_address)
+
+        tv_text?.text = event.title
+        tv_subtext?.text = "Engineer Id : "+event.engineer_id
+        tv_address?.text = event.location
+
+        linearLayout.addView(jobView!!)
     }
 
     override fun getItemCount(): Int {
@@ -194,7 +193,6 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
             ll_col_1 = v.findViewById(R.id.ll_col_1)
             ll_col_2 = v.findViewById(R.id.ll_col_2)
             ll_col_3 = v.findViewById(R.id.ll_col_3)
-
 
         }
     }

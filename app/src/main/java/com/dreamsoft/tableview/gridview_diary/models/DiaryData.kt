@@ -29,6 +29,7 @@ class DiaryData {
             }
         }
 
+        /* Get only 3 engineers events  */
         fun getKeys(arList: Map<String, List<Events>>): List<String> {
             val arrayKeys = arList.keys.take(3)
             return arrayKeys
