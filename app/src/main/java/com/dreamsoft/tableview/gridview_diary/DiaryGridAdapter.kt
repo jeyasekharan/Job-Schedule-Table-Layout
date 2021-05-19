@@ -177,7 +177,6 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
         }
     }
 
-
     class ViewHolder2(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private var v = itemView
@@ -193,7 +192,6 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
             ll_col_1 = v.findViewById(R.id.ll_col_1)
             ll_col_2 = v.findViewById(R.id.ll_col_2)
             ll_col_3 = v.findViewById(R.id.ll_col_3)
-
         }
     }
 

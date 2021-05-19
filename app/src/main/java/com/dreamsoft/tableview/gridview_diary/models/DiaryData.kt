@@ -5,6 +5,8 @@ class DiaryData {
     companion object {
         var timeHash = HashMap<String, String>()
 
+
+        /* This is just a reference to our time to compare the postions of the layout*/
         val arrDateTime = arrayListOf<String>(
             "06:00:00.0",
             "07:00:00.0",
