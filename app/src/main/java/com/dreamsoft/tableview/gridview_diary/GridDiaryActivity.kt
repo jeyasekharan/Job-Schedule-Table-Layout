@@ -63,7 +63,6 @@ class GridDiaryActivity : AppCompatActivity() {
         }
 
         iv_right_arrow_users.setOnClickListener {
-
             if (usersListIndex < arrFiveGroupsArrayKeys.size -1) {
                 usersListIndex += 1
 
@@ -101,7 +100,6 @@ class GridDiaryActivity : AppCompatActivity() {
             val date = changeDateFormat(it[0].startDate)
             tv_date.text = date
         }
-
     }
 
     private fun setGridAdapter(arList: Map<String, List<Events>>) {
@@ -111,7 +109,7 @@ class GridDiaryActivity : AppCompatActivity() {
 
         /* This code will fetch 3 engineers name and place it in heading */
         arList.forEach lit@{
-            Log.e("name Index ", "setGridAdapter: " + it.component2()[0].color_string)
+            Log.e("name Index ", "setGridAdapter: " + it)
 
             if(nameIndex == 3) {
                 return@lit

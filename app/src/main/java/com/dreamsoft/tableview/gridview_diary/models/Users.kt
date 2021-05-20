@@ -1,6 +1,11 @@
 package com.dreamsoft.tableview.gridview_diary.models
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
+
 data class Users(
+
     val boxchecked: Boolean,
     val days_future: Int,
     val days_past: Int,
@@ -18,7 +23,11 @@ data class Users(
     val uuid: String
 )
 
-val users = """
+class UserDetails {
+
+    companion object {
+
+        val users = """
    [
    {
       "boxchecked":true,
@@ -209,3 +218,16 @@ val users = """
    }
 ] 
 """
+
+        fun getClassArray(): List<Events>? {
+            /* Convert string data to Class  */
+
+            val listType: Type = object : TypeToken<List<Users>>() {}.type
+            val arList = Gson().fromJson<List<Events>>(UserDetails.users, listType)
+
+            return arList
+        }
+
+    }
+
+}
