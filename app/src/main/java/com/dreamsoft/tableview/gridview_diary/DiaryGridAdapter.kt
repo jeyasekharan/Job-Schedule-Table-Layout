@@ -10,77 +10,47 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dreamsoft.tableview.R
 import com.dreamsoft.tableview.gridview_diary.models.DiaryData
+import com.dreamsoft.tableview.gridview_diary.models.EventData
 import com.dreamsoft.tableview.gridview_diary.models.Events
 
 
-class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
+class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
+
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var context: Context? = null
 
-    /* Time data for first column */
-    private val arrTimes = arrayListOf(
-        "6.00",
-        "7.00",
-        "8.00",
-        "9.00",
-        "10.00",
-        "11.00",
-        "12.00",
-        "13.00",
-        "14.00",
-        "15.00",
-        "16.00",
-        "17.00",
-        "18.00",
-        "19.00",
-        "20.00"
-    )
-
     /* Engineer ids and events related to 3 engineers in list array */
-    var keysEngineer: List<String>
-    var event1: List<Events>
+
+  /*  var event1: List<Events>
     var event2: List<Events>
     var event3: List<Events>
+    var event4: List<Events>
+    var event5: List<Events>*/
 
     init {
-        DiaryData.setTimeData()
-        keysEngineer = DiaryData.getKeys(arList)
-        Log.e("insdieee", ": $keysEngineer")
-        event1 = arList[keysEngineer[0]]!!
-        event2 = arList[keysEngineer[1]]!!
-        event3 = arList[keysEngineer[2]]!!
 
+        /* Events related to 5 or less Engineers*/
 
-        /* Get the start time and end time for each events ---- This is just for checking */
-        event1.forEach {
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
+        for (i in alFiveEngineersEvents.indices) {
 
-            Log.e("event 1 ", "startt  : "+startTime )
         }
+    }
 
-        event2.forEach {
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
+    /* Gets events of five engineers from activity when users changes to another activity */
 
-            Log.e("event 2 ", "startt  : " +startTime )
-        }
-
-        event3.forEach {
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
-
-            Log.e("event 3 ", "startt  : "+startTime )
-        }
+    fun setFiveEventData(alFiveEngineersEvents: ArrayList<List<Events>>) {
+        this.alFiveEngineersEvents = alFiveEngineersEvents
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
 
+
         return ViewHolder2(
             LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
-        )
+                    ,alFiveEngineersEvents.size)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -88,48 +58,9 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
         holder.setIsRecyclable(false)
 
         val viewHolder2: ViewHolder2 = holder as ViewHolder2
-        viewHolder2.tv_time?.text = arrTimes[position]
+        viewHolder2.tv_time?.text = EventData.arrTimes[position]
 
-        /* The three events will be looped to check whether the engineer has any event for that particular time*/
-        event1.forEach {
-
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
-
-            if (startTime == DiaryData.arrDateTime[position]) {
-               // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
-
-                //addEvent(viewHolder2, viewHolder2.ll_col_1!!)
-                addEvent(viewHolder2, viewHolder2.ll_col_1!!, event = it)
-            }
-        }
-
-        event2.forEach {
-
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
-
-          //  viewHolder2.ll_col_2!!.removeAllViews()
-
-            if (startTime == DiaryData.arrDateTime[position]) {
-               // Log.e("event 2:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
-
-                addEvent(viewHolder2, viewHolder2.ll_col_2!!, event = it)
-            }
-        }
-
-        event3.forEach {
-            val startTime = it.startDate.split(" ").toTypedArray()[1]
-            val endTime = it.endDate.split(" ").toTypedArray()[1]
-
-           // viewHolder2.ll_col_3!!.removeAllViews()
-
-            if (startTime == DiaryData.arrDateTime[position]) {
-                Log.e("event 3:", "onBindViewHolder: event 3 $startTime   array time ${DiaryData.arrDateTime[position]}" )
-
-                addEvent(viewHolder2, viewHolder2.ll_col_3!!, event = it)
-            }
-        }
+        bindEvents(position, viewHolder2)
     }
 
     /* Method to inflate the event in that particular column */
@@ -165,7 +96,7 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
     }
 
     override fun getItemCount(): Int {
-        return arrTimes.size
+        return EventData.arrTimes.size
     }
 
     class ViewHolder1(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -177,22 +108,68 @@ class DiaryGridAdapter(var arList: Map<String, List<Events>>) :
         }
     }
 
-    class ViewHolder2(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder2(itemView: View, columnSize: Int) : RecyclerView.ViewHolder(itemView) {
 
         private var v = itemView
 
         var ll_col_1: LinearLayout? = null
         var ll_col_2: LinearLayout? = null
         var ll_col_3: LinearLayout? = null
+        var ll_col_4: LinearLayout? = null
+        var ll_col_5: LinearLayout? = null
 
         var tv_time: TextView? = null
+
+        lateinit var ll_arrays: Array<LinearLayout?>
 
         init {
             tv_time = v.findViewById(R.id.tv_time)
             ll_col_1 = v.findViewById(R.id.ll_col_1)
             ll_col_2 = v.findViewById(R.id.ll_col_2)
             ll_col_3 = v.findViewById(R.id.ll_col_3)
+            ll_col_4 = v.findViewById(R.id.ll_col_4)
+            ll_col_5 = v.findViewById(R.id.ll_col_5)
+
+            ll_arrays = arrayOf(ll_col_1, ll_col_2, ll_col_3, ll_col_4, ll_col_5)
+
+            ll_col_1?.visibility = View.GONE
+            ll_col_2?.visibility = View.GONE
+            ll_col_3?.visibility = View.GONE
+            ll_col_4?.visibility = View.GONE
+            ll_col_5?.visibility = View.GONE
+
+            for (i in 0 until columnSize) {
+                ll_arrays[i]?.visibility = View.VISIBLE
+            }
         }
     }
+
+
+    private fun bindEvents(position: Int, viewHolder2: ViewHolder2) {
+
+        /* The three events will be looped to check whether the engineer has any event for that particular time */
+
+        for (i in alFiveEngineersEvents.indices) {
+            viewHolder2.ll_arrays[i]?.visibility = View.VISIBLE
+
+            for (event in alFiveEngineersEvents[i]) {
+
+                val startTime = event.startDate.split(" ").toTypedArray()[1]
+                val endTime = event.endDate.split(" ").toTypedArray()[1]
+
+                if (startTime == DiaryData.arrDateTime[position]) {
+                    // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
+
+                    //addEvent(viewHolder2, viewHolder2.ll_col_1!!)
+                    addEvent(viewHolder2, viewHolder2.ll_arrays[i]!!, event = event)
+                }
+
+            }
+        }
+
+
+
+    }
+
 
 }

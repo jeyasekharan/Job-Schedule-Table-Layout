@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dreamsoft.tableview.R
+import com.dreamsoft.tableview.gridview_diary.models.DiaryData
 import com.dreamsoft.tableview.gridview_diary.models.EventData
 import com.dreamsoft.tableview.gridview_diary.models.Events
 import com.google.gson.Gson
@@ -12,13 +13,21 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_grid_view_diary.*
 import org.json.JSONArray
 import java.lang.reflect.Type
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /* This is diary view with gridview  */
+
 class GridDiaryActivity : AppCompatActivity() {
 
     var jsonArray: JSONArray? = null
+    var usersListIndex = 0
+    lateinit var arrFiveGroupsArrayKeys: List<List<String>>
+    lateinit var keysEngineer: List<String>
+
+
+    /* Grouped Events based on Engineer ids*/
+    var eventGroupedOnEngineerIDs: Map<String, List<Events>>? = null
+
+    private lateinit var gridDiaryAdapter: DiaryGridAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +40,7 @@ class GridDiaryActivity : AppCompatActivity() {
     private fun setClickListeners() {
         iv_left_arrow.setOnClickListener {
 
+
         }
 
         iv_right_arrow.setOnClickListener {
@@ -39,9 +49,31 @@ class GridDiaryActivity : AppCompatActivity() {
 
         iv_left_arrow_users.setOnClickListener {
 
+            if (usersListIndex > 0) {
+                usersListIndex -= 1
+
+                keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
+
+                eventGroupedOnEngineerIDs?.let {
+                    val eventsData = getFiveEvents(it, keysEngineer)
+                    gridDiaryAdapter.setFiveEventData(eventsData)
+                }
+            }
+
         }
 
         iv_right_arrow_users.setOnClickListener {
+
+            if (usersListIndex < arrFiveGroupsArrayKeys.size -1) {
+                usersListIndex += 1
+
+                keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
+
+                eventGroupedOnEngineerIDs?.let {
+                    val eventsData = getFiveEvents(it, keysEngineer)
+                    gridDiaryAdapter.setFiveEventData(eventsData)
+                }
+            }
 
         }
     }
@@ -55,13 +87,14 @@ class GridDiaryActivity : AppCompatActivity() {
         val totalEvents = arList.size
 
         /* Grouping events by engineers id  */
-        val maps = arList.groupBy { it.engineer_id }
+        eventGroupedOnEngineerIDs = arList.groupBy { it.engineer_id }
 
-        Log.e("tagg", "getData: "+ maps )
+        Log.e("tagg", "getData: "+ eventGroupedOnEngineerIDs )
 
         /* Set adapter */
-
-        setGridAdapter(maps)
+         eventGroupedOnEngineerIDs?.let {
+             setGridAdapter(it)
+         }
 
         /* Select date from event and set date in top heading */
         arList.let {
@@ -69,32 +102,10 @@ class GridDiaryActivity : AppCompatActivity() {
             tv_date.text = date
         }
 
-
-     /*   val setOfThree = HashMap<String, List<Events>>()
-
-        for (i in 0 until engineerIds.size step 3) {
-
-            var setIndex = 0
-
-            for (j in 0..i) {
-
-                Log.e("data  type  ", "setGridAdapter: " + engineerIds.elementAt(setIndex))
-
-                setOfThree.put(setIndex.toString(), maps.get(engineerIds.elementAt(j))!!)
-                setIndex++
-            }
-        }
-
-        Log.e("set of threee  ", "setGridAdapter: " + setOfThree)
-
-        //Set Date for the index
-
-
-        setGridAdapter(setOfThree["0"]!!)*/
-        // val weatherList: List<Events> = Gson().fromJson(EventData.data , Array<Events>::class.java).toList()
     }
 
     private fun setGridAdapter(arList: Map<String, List<Events>>) {
+
         var arList2: Map.Entry<String, List<Events>>
         var nameIndex = 0
 
@@ -122,26 +133,48 @@ class GridDiaryActivity : AppCompatActivity() {
                     tv_name_1.text = it.value[0].username
                 }
             }
-
             nameIndex++
         }
 
-        val gridDiaryAdapter = DiaryGridAdapter(arList)
+        /* Take list of 5 engineers id from data */
+
+        arrFiveGroupsArrayKeys = DiaryData.splitInto5Keys(arList)
+        Log.e("group of keys  ", "setGridAdapter: "+ arrFiveGroupsArrayKeys )
+
+        /* Engineer keys are grouped into five each*/
+        keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
+
+        Log.e("taggg   ", "setGridAdapter: " + arList + "   "+ keysEngineer)
+        val eventsData = getFiveEvents(arList, keysEngineer)
+
+        gridDiaryAdapter = DiaryGridAdapter(eventsData)
+        gridDiaryAdapter.setFiveEventData(eventsData)
 
         gridview_diary.layoutManager = GridLayoutManager(this, 1)
         gridview_diary.adapter = gridDiaryAdapter
     }
 
+    /* To get no of events depending upon keys */
+    private fun getFiveEvents(arList: Map<String, List<Events>>, keysEngineer: List<String>) :ArrayList<List<Events>> {
+        var eventsBasedOnEngineers : ArrayList<List<Events>> = ArrayList()
+
+        Log.e("atggg", "getFiveEvents: $keysEngineer   ${keysEngineer.indices}, ")
+        for (i in keysEngineer.indices) {
+            eventsBasedOnEngineers.add(arList[keysEngineer[i]]!!)
+        }
+
+        return eventsBasedOnEngineers
+
+    }
+
 
     fun changeDateFormat(date: String): String {
         val strs = date.split(" ").toTypedArray()
-
         return strs[0]
         /* val originalFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
          val targetFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd")
          val date: Date = originalFormat.parse(strs[0])
          val formattedDate: String = targetFormat.format(date) // 2012082*/
-
     }
 }
 

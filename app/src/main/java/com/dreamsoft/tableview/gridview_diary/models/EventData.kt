@@ -7,6 +7,24 @@ object EventData {
     const val NORMAL_JOB_EVENT = 3
     const val ESTIMATE_JOB_EVENT = 2
 
+    /* Time data for first column */
+    val arrTimes = arrayListOf(
+        "6.00",
+        "7.00",
+        "8.00",
+        "9.00",
+        "10.00",
+        "11.00",
+        "12.00",
+        "13.00",
+        "14.00",
+        "15.00",
+        "16.00",
+        "17.00",
+        "18.00",
+        "19.00",
+        "20.00"
+    )
 
     val data = """
         [

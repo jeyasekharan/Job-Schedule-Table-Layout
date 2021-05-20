@@ -1,10 +1,11 @@
 package com.dreamsoft.tableview.gridview_diary.models
 
+import android.util.Log
+
 class DiaryData {
 
     companion object {
         var timeHash = HashMap<String, String>()
-
 
         /* This is just a reference to our time to compare the postions of the layout*/
         val arrDateTime = arrayListOf<String>(
@@ -32,9 +33,15 @@ class DiaryData {
         }
 
         /* Get only 3 engineers events  */
-        fun getKeys(arList: Map<String, List<Events>>): List<String> {
-            val arrayKeys = arList.keys.take(3)
+        fun splitInto5Keys(arList: Map<String, List<Events>>): List<List<String>> {
+            Log.e("all keys", "  getKeys: "+arList.keys )
+            val arrayKeys = arList.keys.chunked(5)
             return arrayKeys
         }
+
+        fun getKeyIndex(listKeys : List<List<String>>, index: Int) : List<String> {
+            return listKeys[index]
+        }
+
     }
 }
