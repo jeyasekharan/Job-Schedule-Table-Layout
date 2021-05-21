@@ -1,18 +1,22 @@
 package com.dreamsoft.tableview.gridview_diary
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.view.OrientationEventListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dreamsoft.tableview.R
 import com.dreamsoft.tableview.gridview_diary.models.DiaryData
 import com.dreamsoft.tableview.gridview_diary.models.EventData
 import com.dreamsoft.tableview.gridview_diary.models.Events
+import com.dreamsoft.tableview.gridview_diary.models.UserDetails
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_grid_view_diary.*
 import org.json.JSONArray
 import java.lang.reflect.Type
+
 
 /* This is diary view with gridview  */
 
@@ -23,6 +27,7 @@ class GridDiaryActivity : AppCompatActivity() {
     lateinit var arrFiveGroupsArrayKeys: List<List<String>>
     lateinit var keysEngineer: List<String>
 
+    var myOrientationEventListener: OrientationEventListener? = null
 
     /* Grouped Events based on Engineer ids*/
     var eventGroupedOnEngineerIDs: Map<String, List<Events>>? = null
@@ -35,6 +40,33 @@ class GridDiaryActivity : AppCompatActivity() {
 
         getData()
         setClickListeners()
+        //getInitialOrientation()
+    }
+
+    private fun getInitialOrientation() {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            if (this::gridDiaryAdapter.isInitialized) {
+                gridDiaryAdapter.setOrientation(Configuration.ORIENTATION_LANDSCAPE)
+            }
+
+        } else {
+            if (this::gridDiaryAdapter.isInitialized) {
+                gridDiaryAdapter.setOrientation(Configuration.ORIENTATION_PORTRAIT)
+            }
+        }
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val newOrientation: Int = newConfig.orientation
+
+        if (newOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+        } else {
+
+        }
     }
 
     private fun setClickListeners() {
@@ -54,6 +86,8 @@ class GridDiaryActivity : AppCompatActivity() {
 
                 keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
 
+                setEngineerColumnNames(keysEngineer)
+
                 eventGroupedOnEngineerIDs?.let {
                     val eventsData = getFiveEvents(it, keysEngineer)
                     gridDiaryAdapter.setFiveEventData(eventsData)
@@ -67,6 +101,8 @@ class GridDiaryActivity : AppCompatActivity() {
                 usersListIndex += 1
 
                 keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
+
+                setEngineerColumnNames(keysEngineer)
 
                 eventGroupedOnEngineerIDs?.let {
                     val eventsData = getFiveEvents(it, keysEngineer)
@@ -142,6 +178,8 @@ class GridDiaryActivity : AppCompatActivity() {
         /* Engineer keys are grouped into five each*/
         keysEngineer = DiaryData.getKeyIndex(arrFiveGroupsArrayKeys, usersListIndex)
 
+        setEngineerColumnNames(keysEngineer)
+
         Log.e("taggg   ", "setGridAdapter: " + arList + "   "+ keysEngineer)
         val eventsData = getFiveEvents(arList, keysEngineer)
 
@@ -150,6 +188,19 @@ class GridDiaryActivity : AppCompatActivity() {
 
         gridview_diary.layoutManager = GridLayoutManager(this, 1)
         gridview_diary.adapter = gridDiaryAdapter
+    }
+
+
+    private fun setEngineerColumnNames(keysEngineer: List<String>) {
+        val users = UserDetails.getModelFromJson()
+
+        val tvArrays = arrayOf(tv_name_1, tv_name_2, tv_name_3, tv_name_4, tv_name_5)
+
+        keysEngineer.forEachIndexed { index, key ->
+            val user = users?.first { it.user_id.toString() == key }
+            tvArrays[index].text = user?.firstname + user?.surname
+        }
+
     }
 
     /* To get no of events depending upon keys */

@@ -219,11 +219,11 @@ class UserDetails {
 ] 
 """
 
-        fun getClassArray(): List<Events>? {
+        fun getModelFromJson(): List<Users>? {
             /* Convert string data to Class  */
 
             val listType: Type = object : TypeToken<List<Users>>() {}.type
-            val arList = Gson().fromJson<List<Events>>(UserDetails.users, listType)
+            val arList = Gson().fromJson<List<Users>>(users, listType)
 
             return arList
         }

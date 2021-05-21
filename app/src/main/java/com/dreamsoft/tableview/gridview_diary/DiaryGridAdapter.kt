@@ -1,6 +1,7 @@
 package com.dreamsoft.tableview.gridview_diary
 
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +30,6 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
     var event5: List<Events>*/
 
     init {
-
         /* Events related to 5 or less Engineers*/
 
         for (i in alFiveEngineersEvents.indices) {
@@ -46,7 +46,6 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
-
 
         return ViewHolder2(
             LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
@@ -144,12 +143,13 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
         }
     }
 
+    var endTimeExtArr = arrayOf(0,0,0,0,0)
 
     private fun bindEvents(position: Int, viewHolder2: ViewHolder2) {
-
         /* The three events will be looped to check whether the engineer has any event for that particular time */
 
         for (i in alFiveEngineersEvents.indices) {
+
             viewHolder2.ll_arrays[i]?.visibility = View.VISIBLE
 
             for (event in alFiveEngineersEvents[i]) {
@@ -157,6 +157,7 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
                 val startTime = event.startDate.split(" ").toTypedArray()[1]
                 val endTime = event.endDate.split(" ").toTypedArray()[1]
 
+                /* Checks with corresponding time position for the linear layouts */
                 if (startTime == DiaryData.arrDateTime[position]) {
                     // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
 
@@ -164,12 +165,50 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
                     addEvent(viewHolder2, viewHolder2.ll_arrays[i]!!, event = event)
                 }
 
+                /* Check for end time events */
+
+                val endTimeHour = endTime.substring(0,2)
+                val endTimeMinutes = endTime.substring(3,5)
+
+                saveEndTime()
+
+                val startTimeHour = endTime.substring(0,2)
+                val startTimeMinutes = endTime.substring(3,5)
+
+
+                Log.e("end time", " $endTimeHour  minutes  $endTimeMinutes")
+
+                if(endTimeHour.toInt() == startTime.toInt() + 1) {
+
+                } else if (endTimeMinutes != "00") {
+                    endTimeExtArr[i] = endTimeExtArr[i] + endTimeMinutes.toInt()
+                } else {
+                    val timeDiff = endTimeHour.toInt() - startTime.toInt()
+
+                    endTimeExtArr[i] = endTimeExtArr[i] + timeDiff
+
+                }
+
+                if (endTime == DiaryData.arrDateTime[position]) {
+                    // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
+
+                    //addEvent(viewHolder2, viewHolder2.ll_arrays[i]!!, event = event)
+                }
             }
         }
+    }
 
-
+    /* Save end time for next event if time exceeds an hour */
+    private fun saveEndTime() {
 
     }
 
 
+    fun setOrientation(orientationLandscape: Int) {
+        if (orientationLandscape == Configuration.ORIENTATION_LANDSCAPE) {
+            notifyDataSetChanged()
+        } else {
+            notifyDataSetChanged()
+        }
+    }
 }
