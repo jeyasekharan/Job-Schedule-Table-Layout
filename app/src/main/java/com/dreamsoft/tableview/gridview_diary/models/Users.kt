@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
 data class Users(
-
     val boxchecked: Boolean,
     val days_future: Int,
     val days_past: Int,
@@ -227,7 +226,6 @@ class UserDetails {
 
             return arList
         }
-
     }
 
 }

@@ -143,11 +143,11 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
         }
     }
 
-    var endTimeExtArr = arrayOf(0,0,0,0,0)
+    var endTimeExtArr = arrayOfNulls<EndTimeModel>(5)
+
 
     private fun bindEvents(position: Int, viewHolder2: ViewHolder2) {
         /* The three events will be looped to check whether the engineer has any event for that particular time */
-
         for (i in alFiveEngineersEvents.indices) {
 
             viewHolder2.ll_arrays[i]?.visibility = View.VISIBLE
@@ -178,14 +178,20 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
                 Log.e("end time", " $endTimeHour  minutes  $endTimeMinutes")
 
-                if(endTimeHour.toInt() == startTime.toInt() + 1) {
+                if(endTimeHour.toInt() >= startTime.toInt() + 1) {
+                    endTimeExtArr[i] = EndTimeModel(hour = endTimeHour.toInt(), minutes = endTimeMinutes.toInt())
+                }
+                if (endTimeMinutes != "00") {
+                   // if (end)
+                    endTimeExtArr[i] = EndTimeModel(hour = endTimeHour.toInt(), minutes = endTimeMinutes.toInt())
+                }
 
-                } else if (endTimeMinutes != "00") {
-                    endTimeExtArr[i] = endTimeExtArr[i] + endTimeMinutes.toInt()
-                } else {
+
+
+                else {
+
                     val timeDiff = endTimeHour.toInt() - startTime.toInt()
-
-                    endTimeExtArr[i] = endTimeExtArr[i] + timeDiff
+                   // endTimeExtArr[i] = endTimeExtArr[i] + timeDiff
 
                 }
 
@@ -212,3 +218,5 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
         }
     }
 }
+
+data class EndTimeModel(val hour: Int, val minutes: Int)
