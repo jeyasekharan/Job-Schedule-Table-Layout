@@ -21,14 +21,6 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
     var context: Context? = null
 
-    /* Engineer ids and events related to 3 engineers in list array */
-
-  /*  var event1: List<Events>
-    var event2: List<Events>
-    var event3: List<Events>
-    var event4: List<Events>
-    var event5: List<Events>*/
-
     init {
         /* Events related to 5 or less Engineers*/
 
@@ -46,32 +38,39 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         context = parent.context
-
         return ViewHolder2(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false)
-                    ,alFiveEngineersEvents.size)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_table_row, parent, false),
+            alFiveEngineersEvents.size
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         holder.setIsRecyclable(false)
 
         val viewHolder2: ViewHolder2 = holder as ViewHolder2
+
+        /* Inflating blank view */
+        inflateBlankViews()
+
         viewHolder2.tv_time?.text = EventData.arrTimes[position]
 
         bindEvents(position, viewHolder2)
     }
 
+    private fun inflateBlankViews() {
+
+    }
+
     /* Method to inflate the event in that particular column */
 
-    private fun addEvent(viewHolder2: ViewHolder2, linearLayout: LinearLayout, event: Events) {
+    private fun addEvent(linearLayout: LinearLayout, event: Events) {
 
         val inflater: LayoutInflater = LayoutInflater.from(context)
         var jobView: View? = null
 
-        when(event.jobEventType) {
+        when (event.jobEventType) {
             1 -> {
-               jobView  = inflater.inflate(R.layout.item_job_1, null);
+                jobView = inflater.inflate(R.layout.item_job_1, null);
             }
 
             2 -> {
@@ -88,7 +87,7 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
         val tv_address = jobView?.findViewById<TextView>(R.id.tv_address)
 
         tv_text?.text = event.title
-        tv_subtext?.text = "Engineer Id : "+event.engineer_id
+        tv_subtext?.text = "Engineer Id : " + event.engineer_id
         tv_address?.text = event.location
 
         linearLayout.addView(jobView!!)
@@ -96,15 +95,6 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
     override fun getItemCount(): Int {
         return EventData.arrTimes.size
-    }
-
-    class ViewHolder1(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        private var v = itemView
-
-        init {
-
-        }
     }
 
     class ViewHolder2(itemView: View, columnSize: Int) : RecyclerView.ViewHolder(itemView) {
@@ -119,7 +109,7 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
         var tv_time: TextView? = null
 
-        lateinit var ll_arrays: Array<LinearLayout?>
+        var ll_arrays: Array<LinearLayout?>
 
         init {
             tv_time = v.findViewById(R.id.tv_time)
@@ -147,66 +137,97 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
 
     private fun bindEvents(position: Int, viewHolder2: ViewHolder2) {
+
+        /* For a single row */
+
         /* The three events will be looped to check whether the engineer has any event for that particular time */
+
         for (i in alFiveEngineersEvents.indices) {
+
+//            removeAllView(viewHolder2.ll_arrays[i]!!)
 
             viewHolder2.ll_arrays[i]?.visibility = View.VISIBLE
 
+            /* Check for previous events*/
+            loadEndTime(i, viewHolder2)
+
+            /* Loop through all events and check if an event start time is equal to layout time */
             for (event in alFiveEngineersEvents[i]) {
+
+                /* Split date and time into two components */
 
                 val startTime = event.startDate.split(" ").toTypedArray()[1]
                 val endTime = event.endDate.split(" ").toTypedArray()[1]
 
                 /* Checks with corresponding time position for the linear layouts */
+
                 if (startTime == DiaryData.arrDateTime[position]) {
+
                     // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
+                    addEvent(viewHolder2.ll_arrays[i]!!, event = event)
 
-                    //addEvent(viewHolder2, viewHolder2.ll_col_1!!)
-                    addEvent(viewHolder2, viewHolder2.ll_arrays[i]!!, event = event)
-                }
-
-                /* Check for end time events */
-
-                val endTimeHour = endTime.substring(0,2)
-                val endTimeMinutes = endTime.substring(3,5)
-
-                saveEndTime()
-
-                val startTimeHour = endTime.substring(0,2)
-                val startTimeMinutes = endTime.substring(3,5)
-
-
-                Log.e("end time", " $endTimeHour  minutes  $endTimeMinutes")
-
-                if(endTimeHour.toInt() >= startTime.toInt() + 1) {
-                    endTimeExtArr[i] = EndTimeModel(hour = endTimeHour.toInt(), minutes = endTimeMinutes.toInt())
-                }
-                if (endTimeMinutes != "00") {
-                   // if (end)
-                    endTimeExtArr[i] = EndTimeModel(hour = endTimeHour.toInt(), minutes = endTimeMinutes.toInt())
-                }
-
-
-
-                else {
-
-                    val timeDiff = endTimeHour.toInt() - startTime.toInt()
-                   // endTimeExtArr[i] = endTimeExtArr[i] + timeDiff
+                    /* Check for end time events */
+                    checkSaveEndTime(startTime, endTime, i)
 
                 }
+            }
+        }
 
-                if (endTime == DiaryData.arrDateTime[position]) {
-                    // Log.e("event 1:", "onBindViewHolder: event 3 $startTime   array time DiaryData.arrDateTime[position]" )
+        Log.e(" starting herer ", " ***************")
 
-                    //addEvent(viewHolder2, viewHolder2.ll_arrays[i]!!, event = event)
-                }
+        endTimeExtArr.forEachIndexed { index, endTimeModel ->
+            Log.e(" full end time $index", " ${endTimeModel}")
+        }
+
+        Log.e(" ending here ", " ***************")
+    }
+
+    private fun loadEndTime(i: Int, viewHolder2: ViewHolder2) {
+
+        /* Check for previous time events */
+        if (endTimeExtArr[i] != null) {
+
+            Log.e(" index  $i ", " ${endTimeExtArr[i]}")
+            addPreviousBlankEvent(viewHolder2.ll_arrays[i]!!, "full")
+
+            var endHour = endTimeExtArr[i]?.hour
+            endHour?.let {
+                endHour -= 1
+                endTimeExtArr[i]?.hour = endHour
+            }
+
+            if (endTimeExtArr[i]?.hour == 0) {
+                endTimeExtArr[i] = null
             }
         }
     }
 
-    /* Save end time for next event if time exceeds an hour */
-    private fun saveEndTime() {
+    private fun checkSaveEndTime(startTime: String, endTime: String, i: Int) {
+        val endTimeHour = endTime.substring(0, 2)
+        val endTimeMinutes = endTime.substring(3, 5)
 
+        val startTimeHour = startTime.substring(0, 2)
+        val startTimeMinutes = startTime.substring(3, 5)
+
+
+        if (endTimeHour.toInt() > startTimeHour.toInt() + 1) {
+            val timeDiff = endTimeHour.toInt() - startTimeHour.toInt()
+
+            endTimeExtArr[i] = EndTimeModel(hour = timeDiff, minutes = endTimeMinutes.toInt())
+        }
+    }
+
+    private fun addPreviousBlankEvent(linearLayout: LinearLayout, fullOrHalf: String) {
+        Log.e("add blank", " adding blank even")
+        val inflater: LayoutInflater = LayoutInflater.from(context)
+        var jobView: View? = null
+        jobView = inflater.inflate(R.layout.item_table_blank_grey, null);
+
+        linearLayout.addView(jobView!!)
+    }
+
+    private fun removeAllView(linearLayout: LinearLayout) {
+        linearLayout.removeAllViews()
     }
 
 
@@ -219,4 +240,4 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
     }
 }
 
-data class EndTimeModel(val hour: Int, val minutes: Int)
+data class EndTimeModel(var hour: Int, var minutes: Int)

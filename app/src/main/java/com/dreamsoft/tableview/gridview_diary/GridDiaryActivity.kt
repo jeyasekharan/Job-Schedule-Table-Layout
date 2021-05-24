@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.OrientationEventListener
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dreamsoft.tableview.R
@@ -109,7 +110,6 @@ class GridDiaryActivity : AppCompatActivity() {
                     gridDiaryAdapter.setFiveEventData(eventsData)
                 }
             }
-
         }
     }
 
@@ -124,7 +124,6 @@ class GridDiaryActivity : AppCompatActivity() {
         /* Grouping events by engineers id  */
         eventGroupedOnEngineerIDs = arList.groupBy { it.engineer_id }
 
-        Log.e("tagg", "getData: "+ eventGroupedOnEngineerIDs )
 
         /* Set adapter */
          eventGroupedOnEngineerIDs?.let {
@@ -180,7 +179,6 @@ class GridDiaryActivity : AppCompatActivity() {
 
         setEngineerColumnNames(keysEngineer)
 
-        Log.e("taggg   ", "setGridAdapter: " + arList + "   "+ keysEngineer)
         val eventsData = getFiveEvents(arList, keysEngineer)
 
         gridDiaryAdapter = DiaryGridAdapter(eventsData)
@@ -196,14 +194,27 @@ class GridDiaryActivity : AppCompatActivity() {
 
         val tvArrays = arrayOf(tv_name_1, tv_name_2, tv_name_3, tv_name_4, tv_name_5)
 
+        val llNameArr = arrayOf(ll_name_1, ll_name_2, ll_name_3, ll_name_4, ll_name_5)
+
+
+        /* Display column names based on no of engineers */
+        llNameArr.forEach {
+            it.visibility = View.GONE
+        }
+
+
         keysEngineer.forEachIndexed { index, key ->
+            llNameArr[index].visibility = View.VISIBLE
+
             val user = users?.first { it.user_id.toString() == key }
             tvArrays[index].text = user?.firstname + user?.surname
+
         }
 
     }
 
     /* To get no of events depending upon keys */
+    /* arList - this is grouped events based on engineer keys */
     private fun getFiveEvents(arList: Map<String, List<Events>>, keysEngineer: List<String>) :ArrayList<List<Events>> {
         var eventsBasedOnEngineers : ArrayList<List<Events>> = ArrayList()
 
@@ -213,7 +224,6 @@ class GridDiaryActivity : AppCompatActivity() {
         }
 
         return eventsBasedOnEngineers
-
     }
 
 
