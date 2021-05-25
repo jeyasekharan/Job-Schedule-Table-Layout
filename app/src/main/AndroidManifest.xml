@@ -13,15 +13,19 @@
         android:theme="@style/Theme.TableView">
 
         <activity android:name=".gridview_diary.GridDiaryActivity">
+
+        </activity>
+
+        <activity android:name=".TableProgActivity">
+
+        </activity>
+
+        <activity android:name=".TableWebViewActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".TableProgActivity">
-
         </activity>
 
     </application>

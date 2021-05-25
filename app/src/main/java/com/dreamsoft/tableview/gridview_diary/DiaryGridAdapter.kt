@@ -144,7 +144,7 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
 
         for (i in alFiveEngineersEvents.indices) {
 
-//            removeAllView(viewHolder2.ll_arrays[i]!!)
+//          removeAllView(viewHolder2.ll_arrays[i]!!)
 
             viewHolder2.ll_arrays[i]?.visibility = View.VISIBLE
 
@@ -203,6 +203,7 @@ class DiaryGridAdapter(var alFiveEngineersEvents: ArrayList<List<Events>>) :
     }
 
     private fun checkSaveEndTime(startTime: String, endTime: String, i: Int) {
+
         val endTimeHour = endTime.substring(0, 2)
         val endTimeMinutes = endTime.substring(3, 5)
 
